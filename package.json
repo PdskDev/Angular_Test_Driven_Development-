@@ -42,5 +42,18 @@
     "msw": "^1.1.0",
     "typescript": "~4.9.4",
     "whatwg-fetch": "^3.6.2"
+  },
+  "jest": {
+    "preset": "jest-preset-angular",
+    "setupFilesAfterEnv": [
+      "<rootDir>/setup-jest.ts"
+    ],
+    "transform": {
+      "^.+\\.(ts|js|html)$": "jest-platform-angular"
+    },
+    "testMatch": [
+      "**/?(*.)+(jest).ts"
+    ],
+    "testEnvironment": "jsdom"
   }
 }
