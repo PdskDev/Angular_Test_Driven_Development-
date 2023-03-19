@@ -22,6 +22,7 @@
   id="password"
   aria-label="password"
   placeholder="Password"
+  (input)="onChangePassword($event)"
 />
 <label for="confirmPassword">Confirm password</label>
 <input
@@ -30,5 +31,6 @@
   id="confirmPassword"
   aria-label="confirm password"
   placeholder="Confirm password"
+  (input)="onChangeConfirmPassword($event)"
 />
-<button disabled>Sign Up</button>
+<button [disabled]="buttonIsDisabled">Sign Up</button>
