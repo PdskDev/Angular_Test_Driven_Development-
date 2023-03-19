@@ -8,7 +8,7 @@ describe('AppComponent', () => {
     }).compileComponents();
   });
 
-  it('passes', () => {
+  it('Always passes', () => {
     expect(true).toBe(true);
   });
 });
