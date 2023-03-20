@@ -1,36 +1,45 @@
 <h1>Sign Up</h1>
-<label for="username">Username</label>
-<input
-  type="text"
-  name="username"
-  id="username"
-  aria-label="username"
-  placeholder="Username"
-/>
-<label for="email">Email</label>
-<input
-  type="text"
-  name="email"
-  id="email"
-  aria-label="email"
-  placeholder="Email"
-/>
-<label for="password">Password</label>
-<input
-  type="password"
-  name="password"
-  id="password"
-  aria-label="password"
-  placeholder="Password"
-  (input)="onChangePassword($event)"
-/>
-<label for="confirmPassword">Confirm password</label>
-<input
-  type="password"
-  name="confirmPassword"
-  id="confirmPassword"
-  aria-label="confirm password"
-  placeholder="Confirm password"
-  (input)="onChangeConfirmPassword($event)"
-/>
-<button [disabled]="isButtonDisabled()">Sign Up</button>
+<form>
+  <label for="username">Username</label>
+  <input
+    type="text"
+    name="username"
+    id="username"
+    aria-label="username"
+    placeholder="Username"
+    (input)="onChangeUsername($event)"
+  />
+  <label for="email">Email</label>
+  <input
+    type="text"
+    name="email"
+    id="email"
+    aria-label="email"
+    placeholder="Email"
+    (input)="onChangeEmail($event)"
+  />
+  <label for="password">Password</label>
+  <input
+    type="password"
+    name="password"
+    id="password"
+    aria-label="password"
+    placeholder="Password"
+    (input)="onChangePassword($event)"
+  />
+  <label for="confirmPassword">Confirm password</label>
+  <input
+    type="password"
+    name="confirmPassword"
+    id="confirmPassword"
+    aria-label="confirm password"
+    placeholder="Confirm password"
+    (input)="onChangeConfirmPassword($event)"
+  />
+  <button
+    [disabled]="isButtonDisabled()"
+    (click)="onClickSignUp(); $event.preventDefault()"
+  >
+    Sign Up
+  </button>
+</form>
