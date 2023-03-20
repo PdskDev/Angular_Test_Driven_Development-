@@ -6,7 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sign-up.component.css'],
 })
 export class SignUpComponent implements OnInit {
-  buttonIsDisabled = true;
+  //buttonIsDisabled = false;
+  username = '';
+  email = '';
   password = '';
   confirmPassword = '';
 
@@ -14,13 +16,33 @@ export class SignUpComponent implements OnInit {
 
   ngOnInit(): void {}
 
+  onChangeUsername(event: Event) {
+    this.username = (event.target as HTMLInputElement).value;
+  }
+
+  onChangeEmail(event: Event) {
+    this.email = (event.target as HTMLInputElement).value;
+  }
+
   onChangePassword(event: Event) {
     this.password = (event.target as HTMLInputElement).value;
-    this.buttonIsDisabled = this.password !== this.confirmPassword;
+    //this.buttonIsDisabled = this.password !== this.confirmPassword;
   }
 
   onChangeConfirmPassword(event: Event) {
     this.confirmPassword = (event.target as HTMLInputElement).value;
-    this.buttonIsDisabled = this.password !== this.confirmPassword;
+    //this.buttonIsDisabled = this.password !== this.confirmPassword;
+  }
+
+  isButtonDisabled() {
+    if (
+      this.password == this.confirmPassword &&
+      this.password != '' &&
+      this.confirmPassword != ''
+    ) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }
