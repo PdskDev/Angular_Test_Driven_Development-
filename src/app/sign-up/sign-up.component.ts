@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { HttpClient } from '@angular/common/http';
+
 @Component({
   selector: 'app-sign-up',
   templateUrl: './sign-up.component.html',
@@ -12,7 +14,7 @@ export class SignUpComponent implements OnInit {
   password = '';
   confirmPassword = '';
 
-  constructor() {}
+  constructor(private httpClient: HttpClient) {}
 
   ngOnInit(): void {}
 
@@ -35,7 +37,7 @@ export class SignUpComponent implements OnInit {
   }
 
   onClickSignUp() {
-    fetch('/api/1.0/users', {
+    /* fetch('/api/1.0/users', {
       method: 'post',
       body: JSON.stringify({
         username: this.username,
@@ -45,7 +47,15 @@ export class SignUpComponent implements OnInit {
       headers: {
         'Content-Type': 'application/json',
       },
-    });
+    }); */
+
+    this.httpClient
+      .post('/api/1.0/users', {
+        username: this.username,
+        email: this.email,
+        password: this.password,
+      })
+      .subscribe(() => {});
   }
 
   isButtonDisabled() {
