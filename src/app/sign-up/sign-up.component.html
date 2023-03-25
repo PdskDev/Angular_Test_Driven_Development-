@@ -56,7 +56,16 @@
           />
         </div>
         <div class="text-center">
-          <button [disabled]="isButtonDisabled()" class="btn btn-primary mt-3">
+          <button
+            [disabled]="isButtonDisabled() || apiProgress"
+            class="btn btn-primary mt-3"
+          >
+            <span
+              *ngIf="apiProgress"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
             Sign Up
           </button>
         </div>

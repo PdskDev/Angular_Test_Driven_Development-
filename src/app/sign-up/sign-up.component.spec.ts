@@ -98,7 +98,7 @@ describe('SignUpComponent', () => {
     it('has Sign up button', () => {
       const signUp = fixture.nativeElement as HTMLElement;
       const button = signUp.querySelector('button');
-      expect(button?.textContent).toBe('Sign Up');
+      expect(button?.textContent).toContain('Sign Up');
     });
 
     it('disables the button initially', () => {
@@ -109,25 +109,40 @@ describe('SignUpComponent', () => {
   });
 
   describe('Interactions', () => {
-    it('enable Sign Up button when confirm & password have same value', () => {
-      const signUp = fixture.nativeElement as HTMLElement;
+    let button: any;
+    let httpTestingController: HttpTestingController;
+    let signUp: HTMLElement;
+
+    const setupForm = () => {
+      httpTestingController = TestBed.inject(HttpTestingController);
+      signUp = fixture.nativeElement;
+      const usernameInput = signUp.querySelector(
+        'input[id="username"]'
+      ) as HTMLInputElement;
+      const emailInput = signUp.querySelector(
+        'input[id="email"]'
+      ) as HTMLInputElement;
       const passwordInput = signUp.querySelector(
         'input[id="password"]'
       ) as HTMLInputElement;
-
       const confirmPasswordInput = signUp.querySelector(
         'input[id="confirmPassword"]'
       ) as HTMLInputElement;
-
+      usernameInput.value = 'nadetdev';
+      usernameInput.dispatchEvent(new Event('input'));
+      emailInput.value = 'email@email.com';
+      emailInput.dispatchEvent(new Event('input'));
       passwordInput.value = '123';
       passwordInput.dispatchEvent(new Event('input'));
-
       confirmPasswordInput.value = '123';
       confirmPasswordInput.dispatchEvent(new Event('input'));
-
       fixture.detectChanges();
+      button = signUp.querySelector('button');
+    };
 
-      const button = signUp.querySelector('button');
+    it('enable Sign Up button when confirm & password have same value', () => {
+      setupForm();
+
       expect(button?.disabled).toBeFalsy();
     });
 
@@ -135,45 +150,13 @@ describe('SignUpComponent', () => {
       //Mock fetch
       //const spy = spyOn(window, 'fetch');
 
-      let httpTestingController = TestBed.inject(HttpTestingController);
-
-      const signUp = fixture.nativeElement as HTMLElement;
-
-      const usernameInput = signUp.querySelector(
-        'input[id="username"]'
-      ) as HTMLInputElement;
-
-      const emailInput = signUp.querySelector(
-        'input[id="email"]'
-      ) as HTMLInputElement;
-
-      const passwordInput = signUp.querySelector(
-        'input[id="password"]'
-      ) as HTMLInputElement;
-
-      const confirmPasswordInput = signUp.querySelector(
-        'input[id="confirmPassword"]'
-      ) as HTMLInputElement;
-
-      usernameInput.value = 'nadetdev';
-      usernameInput.dispatchEvent(new Event('input'));
-
-      emailInput.value = 'email@email.com';
-      emailInput.dispatchEvent(new Event('input'));
-
-      passwordInput.value = '123';
-      passwordInput.dispatchEvent(new Event('input'));
-
-      confirmPasswordInput.value = '123';
-      confirmPasswordInput.dispatchEvent(new Event('input'));
-
-      fixture.detectChanges();
-
-      const button = signUp.querySelector('button');
+      setupForm();
 
       button?.click();
 
-      const req = httpTestingController.expectOne('/api/1.0/users');
+      const req = httpTestingController.expectOne(
+        'http://localhost:3000/users'
+      );
       const requestBody = req.request.body;
 
       //const args = spy.calls.allArgs()[0];
@@ -191,6 +174,29 @@ describe('SignUpComponent', () => {
         email: 'email@email.com',
         password: '123',
       });
+    });
+
+    it('disables button when there is an ongoing api call', () => {
+      setupForm();
+      button.click();
+      fixture.detectChanges();
+      button.click();
+      httpTestingController.expectOne('http://localhost:3000/users');
+      expect(button.disabled).toBeTruthy();
+    });
+
+    it('displays spinner after clicking the submit button', () => {
+      setupForm();
+      expect(signUp.querySelector('span[role="status"')).toBeFalsy();
+      button.click();
+      fixture.detectChanges();
+      expect(signUp.querySelector('span[role="status"')).toBeTruthy();
+    });
+
+    it('does not displays spinner while there is no API request', () => {
+      setupForm();
+      fixture.detectChanges();
+      expect(signUp.querySelector('span[role="status"')).toBeFalsy();
     });
   });
 });
