@@ -48,7 +48,6 @@ export class SignUpComponent implements OnInit {
         'Content-Type': 'application/json',
       },
     }); */
-
     this.httpClient
       .post('/api/1.0/users', {
         username: this.username,

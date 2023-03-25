@@ -1,40 +1,66 @@
-<h1>Sign Up</h1>
-<form (submit)="onClickSignUp(); $event.preventDefault()">
-  <label for="username">Username</label>
-  <input
-    type="text"
-    name="username"
-    id="username"
-    aria-label="username"
-    placeholder="Username"
-    (input)="onChangeUsername($event)"
-  />
-  <label for="email">Email</label>
-  <input
-    type="text"
-    name="email"
-    id="email"
-    aria-label="email"
-    placeholder="Email"
-    (input)="onChangeEmail($event)"
-  />
-  <label for="password">Password</label>
-  <input
-    type="password"
-    name="password"
-    id="password"
-    aria-label="password"
-    placeholder="Password"
-    (input)="onChangePassword($event)"
-  />
-  <label for="confirmPassword">Confirm password</label>
-  <input
-    type="password"
-    name="confirmPassword"
-    id="confirmPassword"
-    aria-label="confirm password"
-    placeholder="Confirm password"
-    (input)="onChangeConfirmPassword($event)"
-  />
-  <button [disabled]="isButtonDisabled()">Sign Up</button>
-</form>
+<div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2">
+  <div class="card">
+    <div class="card-header text-center">
+      <h1>Sign Up</h1>
+    </div>
+    <div class="card-body">
+      <form (submit)="onClickSignUp(); $event.preventDefault()">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input
+            type="text"
+            name="username"
+            id="username"
+            aria-label="username"
+            placeholder="Username"
+            (input)="onChangeUsername($event)"
+            class="form-control"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            type="text"
+            name="email"
+            id="email"
+            aria-label="email"
+            placeholder="Email"
+            (input)="onChangeEmail($event)"
+            class="form-control"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            aria-label="password"
+            placeholder="Password"
+            (input)="onChangePassword($event)"
+            class="form-control"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="confirmPassword" class="form-label"
+            >Confirm password</label
+          >
+          <input
+            type="password"
+            name="confirmPassword"
+            id="confirmPassword"
+            aria-label="confirm password"
+            placeholder="Confirm password"
+            (input)="onChangeConfirmPassword($event)"
+            class="form-control"
+          />
+        </div>
+        <div class="text-center">
+          <button [disabled]="isButtonDisabled()" class="btn btn-primary mt-3">
+            Sign Up
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

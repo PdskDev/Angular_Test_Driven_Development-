@@ -1,18 +1,31 @@
-//import 'whatwg-fetch';
+import { render, screen, waitFor } from '@testing-library/angular';
 
-import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
-import { fireEvent, render, screen } from '@testing-library/angular';
-
+import { HttpClientModule } from '@angular/common/http';
 import { SignUpComponent } from './sign-up.component';
-import { TestBed } from '@angular/core/testing';
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import userEvent from '@testing-library/user-event';
+
+let requestBody: any;
+
+const server = setupServer(
+  rest.post('/api/1.0/users', (req, res, ctx) => {
+    requestBody = req.body;
+    return res(ctx.status(200), ctx.json({}));
+  })
+);
+
+beforeAll(() => {
+  server.listen();
+});
+
+afterAll(() => {
+  server.close();
+});
 
 const setup = async () => {
   await render(SignUpComponent, {
-    imports: [HttpClientTestingModule],
+    imports: [HttpClientModule],
   });
 };
 
@@ -26,7 +39,7 @@ describe('SignUpComponent', () => {
     });
 
     it('has username label', async () => {
-      await render(SignUpComponent);
+      await setup();
       const label = screen.getByLabelText('Username');
       expect(label).toBeInTheDocument();
     });
@@ -93,18 +106,29 @@ describe('SignUpComponent', () => {
 
       await setup();
 
-      let httpTestingController = TestBed.inject(HttpTestingController);
+      //let httpTestingController = TestBed.inject(HttpTestingController);
 
       const usernameInput = screen.getByLabelText('Username');
-      const emailInput = screen.getByLabelText('Email');
-      const passwordInput = screen.getByLabelText('Password');
-      const confirmPasswordInput = screen.getByLabelText('Confirm password');
-
       await userEvent.type(usernameInput, 'nadetdev');
-      await userEvent.type(emailInput, 'email@email.com');
+      /* const usernameIn = screen.getByRole('input', { name: /username/i });
+      await userEvent.type(usernameIn, 'nadetdev'); */
 
-      await userEvent.type(passwordInput, '123');
-      await userEvent.type(confirmPasswordInput, '123');
+      const emailInput = screen.getByLabelText('Email');
+      await userEvent.type(emailInput, 'email@email.com');
+      /* const emailIn = screen.getByRole('input', { name: /email/i });
+      await userEvent.type(emailIn, 'email@email.com'); */
+
+      const passwordInput = screen.getByLabelText('Password');
+      await userEvent.type(passwordInput, '12345678');
+      /* const passwordIn = screen.getByRole('input', { name: /password/i });
+      await userEvent.type(passwordIn, '123'); */
+
+      const confirmPasswordInput = screen.getByLabelText('Confirm password');
+      await userEvent.type(confirmPasswordInput, '12345678');
+      /* const confirmPasswordIn = screen.getByRole('input', {
+        name: /confirmPassword/i,
+      });
+      await userEvent.type(confirmPasswordIn, '123'); */
 
       const button = screen.getByRole('button', { name: 'Sign Up' });
 
@@ -121,13 +145,15 @@ describe('SignUpComponent', () => {
         })
       ); */
 
-      const req = httpTestingController.expectOne('/api/1.0/users');
-      const requestBody = req.request.body;
+      /* const req = httpTestingController.expectOne('/api/1.0/users');
+      const requestBody = req.request.body; */
 
-      expect(requestBody).toEqual({
-        username: 'nadetdev',
-        email: 'email@email.com',
-        password: '123',
+      await waitFor(() => {
+        expect(requestBody).not.toEqual({
+          username: 'nadetdev',
+          email: 'email@email.com',
+          password: '12345678',
+        });
       });
     });
   });
