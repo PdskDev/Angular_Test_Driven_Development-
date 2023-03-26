@@ -14,6 +14,7 @@ export class SignUpComponent implements OnInit {
   password = '';
   confirmPassword = '';
   apiProgress = false;
+  signUpSuccess = false;
 
   constructor(private httpClient: HttpClient) {}
 
@@ -58,7 +59,9 @@ export class SignUpComponent implements OnInit {
         email: this.email,
         password: this.password,
       })
-      .subscribe(() => {});
+      .subscribe(() => {
+        this.signUpSuccess = true;
+      });
   }
 
   isButtonDisabled() {
