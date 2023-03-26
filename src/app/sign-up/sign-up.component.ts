@@ -27,16 +27,12 @@ export class SignUpComponent implements OnInit {
 
   onClickSignUp() {
     this.apiProgress = true;
+    const body: any = this.form.value;
+    delete body.confirmPassword;
 
-    this.userService
-      .signUp({
-        username: this.form.get('username')?.value,
-        email: this.form.get('email')?.value,
-        password: this.form.get('password')?.value,
-      })
-      .subscribe(() => {
-        this.signUpSuccess = true;
-      });
+    this.userService.signUp(body).subscribe(() => {
+      this.signUpSuccess = true;
+    });
   }
 
   isButtonDisabled() {

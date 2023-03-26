@@ -8,7 +8,7 @@ import { User } from './user.interface';
 export class UserService {
   constructor(private httpClient: HttpClient) {}
 
-  signUp(body: User) {
+  signUp(body: { username: string; email: string; password: string }) {
     return this.httpClient.post('http://localhost:3000/users', body);
   }
 }
