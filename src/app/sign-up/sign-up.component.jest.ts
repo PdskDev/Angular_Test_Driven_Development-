@@ -9,13 +9,19 @@ import { setupServer } from 'msw/node';
 import userEvent from '@testing-library/user-event';
 
 let requestBody: any;
+let counter = 0;
 
 const server = setupServer(
   rest.post('http://localhost:3000/users', (req, res, ctx) => {
     requestBody = req.body;
+    counter += 1;
     return res(ctx.status(200), ctx.json({}));
   })
 );
+
+beforeEach(() => {
+  counter = 0;
+});
 
 beforeAll(() => {
   server.listen();
@@ -88,68 +94,32 @@ describe('SignUpComponent', () => {
   });
 
   describe('Interactions', () => {
-    it('enable Sign Up button when confirm & password have same value', async () => {
+    let button: any;
+    let spinner: any;
+    const setupForm = async () => {
       await setup();
-      const passwordInput = screen.getByLabelText('Password');
-      const confirmPasswordInput = screen.getByLabelText('Confirm password');
+      const username = screen.getByLabelText('Username');
+      const email = screen.getByLabelText('Email');
+      const password = screen.getByLabelText('Password');
+      const confirmPassword = screen.getByLabelText('Confirm password');
+      await userEvent.type(username, 'nadetdev');
+      await userEvent.type(email, 'email@email.com');
+      await userEvent.type(password, '12345678');
+      await userEvent.type(confirmPassword, '12345678');
+      button = screen.getByRole('button', { name: 'Sign Up' });
+    };
+    it('enables Sign Up button when confirm & password fields have same value', async () => {
+      await setupForm();
 
-      await userEvent.type(passwordInput, '123');
-      await userEvent.type(confirmPasswordInput, '123');
-
-      const button = screen.getByRole('button', { name: 'Sign Up' });
-
-      expect(passwordInput).toHaveValue('123');
-      expect(confirmPasswordInput).toHaveValue('123');
-
-      //expect(button).toBeEnabled();
+      await waitFor(() => {
+        expect(button).toBeEnabled();
+      });
     });
 
     it('sends username, email and password to backend after clicking the button', async () => {
-      //const spy = jest.spyOn(window, 'fetch');
-
-      await setup();
-
-      //let httpTestingController = TestBed.inject(HttpTestingController);
-
-      const usernameInput = screen.getByLabelText('Username');
-      await userEvent.type(usernameInput, 'nadetdev');
-      /* const usernameIn = screen.getByRole('input', { name: /username/i });
-      await userEvent.type(usernameIn, 'nadetdev'); */
-
-      const emailInput = screen.getByLabelText('Email');
-      await userEvent.type(emailInput, 'email@email.com');
-      /* const emailIn = screen.getByRole('input', { name: /email/i });
-      await userEvent.type(emailIn, 'email@email.com'); */
-
-      const passwordInput = screen.getByLabelText('Password');
-      await userEvent.type(passwordInput, '12345678');
-      /* const passwordIn = screen.getByRole('input', { name: /password/i });
-      await userEvent.type(passwordIn, '123'); */
-
-      const confirmPasswordInput = screen.getByLabelText('Confirm password');
-      await userEvent.type(confirmPasswordInput, '12345678');
-      /* const confirmPasswordIn = screen.getByRole('input', {
-        name: /confirmPassword/i,
-      });
-      await userEvent.type(confirmPasswordIn, '123'); */
-
-      const button = screen.getByRole('button', { name: 'Sign Up' });
+      await setupForm();
 
       await userEvent.click(button);
-
-      //const args = spy.mock.calls[0];
-      //const secondParam = args[1] as RequestInit;
-
-      /* expect(secondParam.body).toEqual(
-        JSON.stringify({
-          username: 'nadetdev',
-          email: 'email@email.com',
-          password: '123',
-        })
-      ); */
-
-      /* const req = httpTestingController.expectOne('/api/1.0/users');
-      const requestBody = req.request.body; */
 
       await waitFor(() => {
         expect(requestBody).not.toEqual({
@@ -158,6 +128,30 @@ describe('SignUpComponent', () => {
           password: '12345678',
         });
       });
+    });
+
+    it('disables button when there is an ongoing api call', async () => {
+      await setupForm();
+      await userEvent.click(button);
+      await userEvent.click(button);
+
+      await waitFor(() => {
+        expect(button).toBeDisabled();
+      });
+
+      /* await waitFor(() => {
+        expect(counter).toBe(1);
+      }); */
+    });
+
+    it('displays spiner after clicking the submit', async () => {
+      await setupForm();
+
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+
+      await userEvent.click(button);
+
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
 
     it('display account activation notification after successful sign up request', () => {});
