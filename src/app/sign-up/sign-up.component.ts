@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { UserService } from '../service/user.service';
 
@@ -9,10 +10,14 @@ import { UserService } from '../service/user.service';
 })
 export class SignUpComponent implements OnInit {
   //buttonIsDisabled = false;
-  username = '';
-  email = '';
-  password = '';
-  confirmPassword = '';
+
+  form = new FormGroup({
+    username: new FormControl(''),
+    email: new FormControl(''),
+    password: new FormControl(''),
+    confirmPassword: new FormControl(''),
+  });
+
   apiProgress = false;
   signUpSuccess = false;
 
@@ -25,9 +30,9 @@ export class SignUpComponent implements OnInit {
 
     this.userService
       .signUp({
-        username: this.username,
-        email: this.email,
-        password: this.password,
+        username: this.form.get('username')?.value,
+        email: this.form.get('email')?.value,
+        password: this.form.get('password')?.value,
       })
       .subscribe(() => {
         this.signUpSuccess = true;
@@ -36,9 +41,10 @@ export class SignUpComponent implements OnInit {
 
   isButtonDisabled() {
     if (
-      this.password == this.confirmPassword &&
-      this.password != '' &&
-      this.confirmPassword != ''
+      this.form.get('password')?.value ==
+        this.form.get('confirmPassword')?.value &&
+      this.form.get('password')?.value != '' &&
+      this.form.get('confirmPassword')?.value != ''
     ) {
       return false;
     } else {

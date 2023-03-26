@@ -7,13 +7,12 @@
       <h1>Sign Up</h1>
     </div>
     <div class="card-body">
-      <form (submit)="onClickSignUp(); $event.preventDefault()">
+      <form [formGroup]="form" (ngSubmit)="onClickSignUp()">
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
           <input
             type="text"
-            name="username"
-            [(ngModel)]="username"
+            formControlName="username"
             id="username"
             aria-label="username"
             placeholder="Username"
@@ -24,8 +23,7 @@
           <label for="email" class="form-label">Email</label>
           <input
             type="text"
-            name="email"
-            [(ngModel)]="email"
+            formControlName="email"
             id="email"
             aria-label="email"
             placeholder="Email"
@@ -36,8 +34,7 @@
           <label for="password" class="form-label">Password</label>
           <input
             type="password"
-            name="password"
-            [(ngModel)]="password"
+            formControlName="password"
             id="password"
             aria-label="password"
             placeholder="Password"
@@ -50,8 +47,7 @@
           >
           <input
             type="password"
-            name="confirmPassword"
-            [(ngModel)]="confirmPassword"
+            formControlName="confirmPassword"
             id="confirmPassword"
             aria-label="confirm password"
             placeholder="Confirm password"

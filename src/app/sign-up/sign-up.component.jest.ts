@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/angular';
 
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { SignUpComponent } from './sign-up.component';
 import { rest } from 'msw';
@@ -33,7 +33,7 @@ afterAll(() => {
 
 const setup = async () => {
   await render(SignUpComponent, {
-    imports: [HttpClientModule, SharedModule, FormsModule],
+    imports: [HttpClientModule, SharedModule, ReactiveFormsModule],
     declarations: [],
   });
 };
