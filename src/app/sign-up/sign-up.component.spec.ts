@@ -4,6 +4,8 @@ import {
   HttpTestingController,
 } from '@angular/common/http/testing';
 
+import { AlertComponent } from '../shared/alert/alert.component';
+import { ButtonComponent } from '../shared/button/button.component';
 import { SignUpComponent } from './sign-up.component';
 
 describe('SignUpComponent', () => {
@@ -12,7 +14,7 @@ describe('SignUpComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SignUpComponent],
+      declarations: [SignUpComponent, AlertComponent, ButtonComponent],
       imports: [HttpClientTestingModule],
     }).compileComponents();
   });
@@ -197,6 +199,37 @@ describe('SignUpComponent', () => {
       setupForm();
       fixture.detectChanges();
       expect(signUp.querySelector('span[role="status"')).toBeFalsy();
+    });
+
+    it('display account activation notification after successful sign up request', () => {
+      setupForm();
+      expect(signUp.querySelector('.alert-success')).toBeFalsy();
+      button.click();
+      const req = httpTestingController.expectOne(
+        'http://localhost:3000/users'
+      );
+      req.flush({});
+      fixture.detectChanges();
+      const message = signUp.querySelector('.alert-success');
+      expect(message?.textContent).toContain(
+        'Please check your e-mail to activate your account'
+      );
+    });
+
+    it('hide sign up form after successfull sign up request', () => {
+      setupForm();
+      expect(
+        signUp.querySelector('div[data-testid="form-sign-up"]')
+      ).toBeTruthy();
+      button.click();
+      const req = httpTestingController.expectOne(
+        'http://localhost:3000/users'
+      );
+      req.flush({});
+      fixture.detectChanges();
+      expect(
+        signUp.querySelector('div[data-testid="form-sign-up"]')
+      ).toBeFalsy();
     });
   });
 });

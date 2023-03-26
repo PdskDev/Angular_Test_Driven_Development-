@@ -1,5 +1,8 @@
-<div class="col-lg-6 offset-lg-3 col-md-8 offset-md-2">
-  <div class="card">
+<div
+  class="col-lg-6 offset-lg-3 col-md-8 offset-md-2"
+  *ngIf="!signUpSuccess; else successMessage"
+>
+  <div class="card" data-testid="form-sign-up">
     <div class="card-header text-center">
       <h1>Sign Up</h1>
     </div>
@@ -56,20 +59,16 @@
           />
         </div>
         <div class="text-center">
-          <button
-            [disabled]="isButtonDisabled() || apiProgress"
-            class="btn btn-primary mt-3"
+          <app-button
+            [disabled]="isButtonDisabled()"
+            [apiProgress]="apiProgress"
+            >Sign Up</app-button
           >
-            <span
-              *ngIf="apiProgress"
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            Sign Up
-          </button>
         </div>
       </form>
     </div>
   </div>
 </div>
+<ng-template #successMessage>
+  <app-alert><ng-content></ng-content></app-alert>
+</ng-template>

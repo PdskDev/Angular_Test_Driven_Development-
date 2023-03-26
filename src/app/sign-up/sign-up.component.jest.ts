@@ -1,5 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/angular';
 
+import { AlertComponent } from '../shared/alert/alert.component';
+import { ButtonComponent } from '../shared/button/button.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SignUpComponent } from './sign-up.component';
 import { rest } from 'msw';
@@ -9,7 +11,7 @@ import userEvent from '@testing-library/user-event';
 let requestBody: any;
 
 const server = setupServer(
-  rest.post('/api/1.0/users', (req, res, ctx) => {
+  rest.post('http://localhost:3000/users', (req, res, ctx) => {
     requestBody = req.body;
     return res(ctx.status(200), ctx.json({}));
   })
@@ -26,6 +28,7 @@ afterAll(() => {
 const setup = async () => {
   await render(SignUpComponent, {
     imports: [HttpClientModule],
+    declarations: [AlertComponent, ButtonComponent],
   });
 };
 
@@ -156,5 +159,7 @@ describe('SignUpComponent', () => {
         });
       });
     });
+
+    it('display account activation notification after successful sign up request', () => {});
   });
 });
