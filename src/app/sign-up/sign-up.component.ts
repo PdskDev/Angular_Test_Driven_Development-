@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { HttpClient } from '@angular/common/http';
+import { UserService } from '../service/user.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -16,33 +16,15 @@ export class SignUpComponent implements OnInit {
   apiProgress = false;
   signUpSuccess = false;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {}
-
-  onChangeUsername(event: Event) {
-    this.username = (event.target as HTMLInputElement).value;
-  }
-
-  onChangeEmail(event: Event) {
-    this.email = (event.target as HTMLInputElement).value;
-  }
-
-  onChangePassword(event: Event) {
-    this.password = (event.target as HTMLInputElement).value;
-    //this.buttonIsDisabled = this.password !== this.confirmPassword;
-  }
-
-  onChangeConfirmPassword(event: Event) {
-    this.confirmPassword = (event.target as HTMLInputElement).value;
-    //this.buttonIsDisabled = this.password !== this.confirmPassword;
-  }
 
   onClickSignUp() {
     this.apiProgress = true;
 
-    this.httpClient
-      .post('http://localhost:3000/users', {
+    this.userService
+      .signUp({
         username: this.username,
         email: this.email,
         password: this.password,

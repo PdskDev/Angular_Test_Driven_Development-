@@ -1,8 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/angular';
 
-import { AlertComponent } from '../shared/alert/alert.component';
-import { ButtonComponent } from '../shared/button/button.component';
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { SharedModule } from '../shared/shared.module';
 import { SignUpComponent } from './sign-up.component';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
@@ -33,8 +33,8 @@ afterAll(() => {
 
 const setup = async () => {
   await render(SignUpComponent, {
-    imports: [HttpClientModule],
-    declarations: [AlertComponent, ButtonComponent],
+    imports: [HttpClientModule, SharedModule, FormsModule],
+    declarations: [],
   });
 };
 

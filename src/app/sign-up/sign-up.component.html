@@ -13,10 +13,10 @@
           <input
             type="text"
             name="username"
+            [(ngModel)]="username"
             id="username"
             aria-label="username"
             placeholder="Username"
-            (input)="onChangeUsername($event)"
             class="form-control"
           />
         </div>
@@ -25,10 +25,10 @@
           <input
             type="text"
             name="email"
+            [(ngModel)]="email"
             id="email"
             aria-label="email"
             placeholder="Email"
-            (input)="onChangeEmail($event)"
             class="form-control"
           />
         </div>
@@ -37,10 +37,10 @@
           <input
             type="password"
             name="password"
+            [(ngModel)]="password"
             id="password"
             aria-label="password"
             placeholder="Password"
-            (input)="onChangePassword($event)"
             class="form-control"
           />
         </div>
@@ -51,10 +51,10 @@
           <input
             type="password"
             name="confirmPassword"
+            [(ngModel)]="confirmPassword"
             id="confirmPassword"
             aria-label="confirm password"
             placeholder="Confirm password"
-            (input)="onChangeConfirmPassword($event)"
             class="form-control"
           />
         </div>
