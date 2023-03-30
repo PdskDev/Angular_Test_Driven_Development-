@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { UserService } from '../service/user.service';
 
@@ -12,7 +12,10 @@ export class SignUpComponent implements OnInit {
   //buttonIsDisabled = false;
 
   form = new FormGroup({
-    username: new FormControl(''),
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(4),
+    ]),
     email: new FormControl(''),
     password: new FormControl(''),
     confirmPassword: new FormControl(''),
@@ -46,5 +49,23 @@ export class SignUpComponent implements OnInit {
     } else {
       return true;
     }
+  }
+
+  get userNameError() {
+    const fieldUsername = this.form.get('username');
+    if (
+      fieldUsername?.errors &&
+      (fieldUsername.touched || fieldUsername.dirty)
+    ) {
+      if (fieldUsername.errors['required']) {
+        return 'Username is required';
+      }
+
+      if (fieldUsername.errors['minlength']) {
+        return 'Username must be at least 4 characters long';
+      }
+    }
+
+    return;
   }
 }
