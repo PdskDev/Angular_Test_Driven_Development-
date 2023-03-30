@@ -223,8 +223,31 @@ describe('SignUpComponent', () => {
       { field: 'username', value: '', error: 'Username is required' },
       {
         field: 'username',
-        value: '123',
+        value: 'abc',
         error: 'Username must be at least 4 characters long',
+      },
+      { field: 'email', value: '', error: 'Email is required' },
+      {
+        field: 'email',
+        value: 'email@',
+        error: 'Email must be at least 8 characters long',
+      },
+      { field: 'password', value: '', error: 'Password is required' },
+      {
+        field: 'password',
+        value: '123',
+        error: 'Password must be at least 8 characters long',
+      },
+
+      {
+        field: 'confirmPassword',
+        value: '',
+        error: 'Confirm password is required',
+      },
+      {
+        field: 'confirmPassword',
+        value: '123',
+        error: 'Confirmation password must be at least 8 characters long',
       },
     ];
 

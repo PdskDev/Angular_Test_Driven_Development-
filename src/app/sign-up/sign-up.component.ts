@@ -16,9 +16,15 @@ export class SignUpComponent implements OnInit {
       Validators.required,
       Validators.minLength(4),
     ]),
-    email: new FormControl(''),
-    password: new FormControl(''),
-    confirmPassword: new FormControl(''),
+    email: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(4),
+    ]),
+    confirmPassword: new FormControl('', [
+      Validators.required,
+      Validators.minLength(4),
+    ]),
   });
 
   apiProgress = false;
@@ -63,6 +69,60 @@ export class SignUpComponent implements OnInit {
 
       if (fieldUsername.errors['minlength']) {
         return 'Username must be at least 4 characters long';
+      }
+    }
+
+    return;
+  }
+
+  get passwordError() {
+    const fieldPassword = this.form.get('password');
+    if (
+      fieldPassword?.errors &&
+      (fieldPassword.touched || fieldPassword.dirty)
+    ) {
+      if (fieldPassword.errors['required']) {
+        return 'Password is required';
+      }
+
+      if (fieldPassword.errors['minlength']) {
+        return 'Password must be at least 8 characters long';
+      }
+    }
+
+    return;
+  }
+
+  get confirmPasswordError() {
+    const fieldConfirmPassword = this.form.get('confirmPassword');
+    if (
+      fieldConfirmPassword?.errors &&
+      (fieldConfirmPassword.touched || fieldConfirmPassword.dirty)
+    ) {
+      if (fieldConfirmPassword.errors['required']) {
+        return 'Confirm password is required';
+      }
+
+      if (fieldConfirmPassword.errors['minlength']) {
+        return 'Confirmation password must be at least 8 characters long';
+      }
+    }
+
+    return;
+  }
+
+  get emailError() {
+    const fieldUsername = this.form.get('email');
+    if (
+      fieldUsername?.errors &&
+      (fieldUsername.touched || fieldUsername.dirty)
+    ) {
+      if (fieldUsername.errors['required']) {
+        return 'Email is required';
+      }
+
+      if (fieldUsername.errors['minlength']) {
+        return 'Email must be at least 8 characters long';
       }
     }
 

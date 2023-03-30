@@ -36,7 +36,15 @@
             aria-label="email"
             placeholder="Email"
             class="form-control"
+            [ngClass]="emailError ? 'is-invalid' : ''"
           />
+          <div
+            data-testid="email-validation"
+            *ngIf="emailError"
+            class="invalid-feedback"
+          >
+            {{ emailError }}
+          </div>
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
@@ -47,7 +55,15 @@
             aria-label="password"
             placeholder="Password"
             class="form-control"
+            [ngClass]="passwordError ? 'is-invalid' : ''"
           />
+          <div
+            data-testid="password-validation"
+            *ngIf="passwordError"
+            class="invalid-feedback"
+          >
+            {{ passwordError }}
+          </div>
         </div>
         <div class="mb-3">
           <label for="confirmPassword" class="form-label"
@@ -60,7 +76,15 @@
             aria-label="confirm password"
             placeholder="Confirm password"
             class="form-control"
+            [ngClass]="confirmPasswordError ? 'is-invalid' : ''"
           />
+          <div
+            data-testid="confirmPassword-validation"
+            *ngIf="confirmPasswordError"
+            class="invalid-feedback"
+          >
+            {{ confirmPasswordError }}
+          </div>
         </div>
         <div class="text-center">
           <app-button
