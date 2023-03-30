@@ -219,7 +219,42 @@ describe('SignUpComponent', () => {
   });
 
   describe('Validation', () => {
-    it('displays Username is required message when username is null', () => {
+    const testCases = [
+      { field: 'username', value: '', error: 'Username is required' },
+      {
+        field: 'username',
+        value: '123',
+        error: 'Username must be at least 4 characters long',
+      },
+    ];
+
+    testCases.forEach(({ field, value, error }) => {
+      it(`displays ${error} when ${field} has '${value}'`, () => {
+        const signUp = fixture.nativeElement as HTMLElement;
+
+        expect(
+          signUp.querySelector(`div[data-testid="${field}-validation"]`)
+        ).toBeNull();
+
+        const input = signUp.querySelector(
+          `input[id="${field}"]`
+        ) as HTMLInputElement;
+
+        input.value = value;
+
+        input.dispatchEvent(new Event('input'));
+        input.dispatchEvent(new Event('blur'));
+
+        fixture.detectChanges();
+
+        const validationElement = signUp.querySelector(
+          `div[data-testid="${field}-validation"]`
+        );
+        expect(validationElement?.textContent).toContain(error);
+      });
+    });
+
+    /* it('displays Username is required message when username is null', () => {
       const signUp = fixture.nativeElement as HTMLElement;
 
       expect(
@@ -239,9 +274,9 @@ describe('SignUpComponent', () => {
         'div[data-testid="username-validation"]'
       );
       expect(validationElement?.textContent).toContain('Username is required');
-    });
+    }); */
 
-    it('displays length error when username is less than 4 characters', () => {
+    /* it('displays length error when username is less than 4 characters', () => {
       const signUp = fixture.nativeElement as HTMLElement;
 
       expect(
@@ -265,6 +300,6 @@ describe('SignUpComponent', () => {
       expect(validationElement?.textContent).toContain(
         'Username must be at least 4 characters long'
       );
-    });
+    }); */
   });
 });
