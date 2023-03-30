@@ -17,7 +17,7 @@
             aria-label="username"
             placeholder="Username"
             class="form-control"
-            [ngClass]="userNameError ? 'is-invalid' : ''"
+            [class.is-invalid]="userNameError"
           />
           <div
             data-testid="username-validation"
