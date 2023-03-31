@@ -226,17 +226,48 @@ describe('SignUpComponent', () => {
         value: 'abc',
         error: 'Username must be at least 4 characters long',
       },
-      { field: 'email', value: '', error: 'Email is required' },
+
       {
         field: 'email',
-        value: 'email@',
-        error: 'Email must be at least 8 characters long',
+        value: 'wrong-format',
+        error: 'Invalid e-mail address',
       },
+
       { field: 'password', value: '', error: 'Password is required' },
       {
         field: 'password',
         value: '123',
         error: 'Password must be at least 4 characters long',
+      },
+      {
+        field: 'password',
+        value: 'password',
+        error:
+          'Password must have at least 1 uppercase, 1 lowercase letter and 1 number',
+      },
+      {
+        field: 'password',
+        value: 'passWORD',
+        error:
+          'Password must have at least 1 uppercase, 1 lowercase letter and 1 number',
+      },
+      {
+        field: 'password',
+        value: '123456',
+        error:
+          'Password must have at least 1 uppercase, 1 lowercase letter and 1 number',
+      },
+      {
+        field: 'password',
+        value: 'pass123',
+        error:
+          'Password must have at least 1 uppercase, 1 lowercase letter and 1 number',
+      },
+      {
+        field: 'password',
+        value: 'PASS123',
+        error:
+          'Password must have at least 1 uppercase, 1 lowercase letter and 1 number',
       },
 
       {

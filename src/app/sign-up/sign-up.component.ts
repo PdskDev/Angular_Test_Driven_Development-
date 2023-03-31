@@ -16,10 +16,15 @@ export class SignUpComponent implements OnInit {
       Validators.required,
       Validators.minLength(4),
     ]),
-    email: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    email: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.email,
+    ]),
     password: new FormControl('', [
       Validators.required,
       Validators.minLength(4),
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/),
     ]),
     confirmPassword: new FormControl('', [
       Validators.required,
@@ -83,10 +88,10 @@ export class SignUpComponent implements OnInit {
     ) {
       if (fieldPassword.errors['required']) {
         return 'Password is required';
-      }
-
-      if (fieldPassword.errors['minlength']) {
+      } else if (fieldPassword.errors['minlength']) {
         return 'Password must be at least 4 characters long';
+      } else if (fieldPassword.errors['pattern']) {
+        return 'Password must have at least 1 uppercase, 1 lowercase letter and 1 number';
       }
     }
 
@@ -112,17 +117,12 @@ export class SignUpComponent implements OnInit {
   }
 
   get emailError() {
-    const fieldUsername = this.form.get('email');
-    if (
-      fieldUsername?.errors &&
-      (fieldUsername.touched || fieldUsername.dirty)
-    ) {
-      if (fieldUsername.errors['required']) {
+    const fieldEmail = this.form.get('email');
+    if (fieldEmail?.errors && (fieldEmail.touched || fieldEmail.dirty)) {
+      if (fieldEmail.errors['required']) {
         return 'Email is required';
-      }
-
-      if (fieldUsername.errors['minlength']) {
-        return 'Email must be at least 8 characters long';
+      } else if (fieldEmail.errors['email']) {
+        return 'Invalid e-mail address';
       }
     }
 
