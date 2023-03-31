@@ -9,18 +9,7 @@ import {
 import { Component, OnInit } from '@angular/core';
 
 import { UserService } from '../service/user.service';
-
-const passwordMatchValidator: ValidatorFn = (
-  control: AbstractControl
-): ValidationErrors | null => {
-  const password = control.get('password');
-  const confirmPassword = control.get('confirmPassword');
-
-  if (password?.value === confirmPassword?.value) {
-    return null;
-  }
-  return { passwordMatch: true };
-};
+import { passwordMatchValidator } from './password-match.validator';
 
 @Component({
   selector: 'app-sign-up',
