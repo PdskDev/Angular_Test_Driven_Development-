@@ -86,7 +86,7 @@ export class SignUpComponent implements OnInit {
       }
 
       if (fieldPassword.errors['minlength']) {
-        return 'Password must be at least 8 characters long';
+        return 'Password must be at least 4 characters long';
       }
     }
 
@@ -104,7 +104,7 @@ export class SignUpComponent implements OnInit {
       }
 
       if (fieldConfirmPassword.errors['minlength']) {
-        return 'Confirmation password must be at least 8 characters long';
+        return 'Confirmation password must be at least 4 characters long';
       }
     }
 

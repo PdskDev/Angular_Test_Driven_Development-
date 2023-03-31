@@ -236,7 +236,7 @@ describe('SignUpComponent', () => {
       {
         field: 'password',
         value: '123',
-        error: 'Password must be at least 8 characters long',
+        error: 'Password must be at least 4 characters long',
       },
 
       {
@@ -247,7 +247,7 @@ describe('SignUpComponent', () => {
       {
         field: 'confirmPassword',
         value: '123',
-        error: 'Confirmation password must be at least 8 characters long',
+        error: 'Confirmation password must be at least 4 characters long',
       },
     ];
 
