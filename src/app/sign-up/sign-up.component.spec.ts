@@ -272,18 +272,13 @@ describe('SignUpComponent', () => {
 
       {
         field: 'confirmPassword',
-        value: '',
-        error: 'Confirm password is required',
-      },
-      {
-        field: 'confirmPassword',
-        value: '123',
-        error: 'Confirmation password must be at least 4 characters long',
+        value: 'PASS1234',
+        error: 'Password mismatch. Please try again',
       },
     ];
 
     testCases.forEach(({ field, value, error }) => {
-      it(`displays ${error} when ${field} has '${value}'`, () => {
+      it(`displays "${error}" when "${field}" has "${value}"`, () => {
         const signUp = fixture.nativeElement as HTMLElement;
 
         expect(

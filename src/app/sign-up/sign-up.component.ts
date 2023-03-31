@@ -1,7 +1,26 @@
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { UserService } from '../service/user.service';
+
+const passwordMatchValidator: ValidatorFn = (
+  control: AbstractControl
+): ValidationErrors | null => {
+  const password = control.get('password');
+  const confirmPassword = control.get('confirmPassword');
+
+  if (password?.value === confirmPassword?.value) {
+    return null;
+  }
+  return { passwordMatch: true };
+};
 
 @Component({
   selector: 'app-sign-up',
@@ -11,26 +30,31 @@ import { UserService } from '../service/user.service';
 export class SignUpComponent implements OnInit {
   //buttonIsDisabled = false;
 
-  form = new FormGroup({
-    username: new FormControl('', [
-      Validators.required,
-      Validators.minLength(4),
-    ]),
-    email: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8),
-      Validators.email,
-    ]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(4),
-      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/),
-    ]),
-    confirmPassword: new FormControl('', [
-      Validators.required,
-      Validators.minLength(4),
-    ]),
-  });
+  form = new FormGroup(
+    {
+      username: new FormControl('', [
+        Validators.required,
+        Validators.minLength(4),
+      ]),
+      email: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.email,
+      ]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(4),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).*$/),
+      ]),
+      confirmPassword: new FormControl('', [
+        Validators.required,
+        Validators.minLength(4),
+      ]),
+    },
+    {
+      validators: passwordMatchValidator,
+    }
+  );
 
   apiProgress = false;
   signUpSuccess = false;
@@ -99,17 +123,9 @@ export class SignUpComponent implements OnInit {
   }
 
   get confirmPasswordError() {
-    const fieldConfirmPassword = this.form.get('confirmPassword');
-    if (
-      fieldConfirmPassword?.errors &&
-      (fieldConfirmPassword.touched || fieldConfirmPassword.dirty)
-    ) {
-      if (fieldConfirmPassword.errors['required']) {
-        return 'Confirm password is required';
-      }
-
-      if (fieldConfirmPassword.errors['minlength']) {
-        return 'Confirmation password must be at least 4 characters long';
+    if (this.form?.errors && (this.form?.touched || this.form?.dirty)) {
+      if (this.form?.errors['passwordMatch']) {
+        return 'Password mismatch. Please try again';
       }
     }
 
