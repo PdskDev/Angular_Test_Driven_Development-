@@ -7,6 +7,7 @@ import {
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { SignUpComponent } from './sign-up.component';
+import { waitFor } from '@testing-library/angular';
 
 describe('SignUpComponent', () => {
   let component: SignUpComponent;
@@ -105,7 +106,7 @@ describe('SignUpComponent', () => {
     });
   });
 
-  describe('Interactions', () => {
+  describe('Interactions', async () => {
     let button: any;
     let httpTestingController: HttpTestingController;
     let signUp: HTMLElement;
@@ -132,6 +133,7 @@ describe('SignUpComponent', () => {
       usernameInput.dispatchEvent(new Event('input'));
       emailInput.value = 'email@email.com';
       emailInput.dispatchEvent(new Event('input'));
+      emailInput.dispatchEvent(new Event('blur'));
       passwordInput.value = '123';
       passwordInput.dispatchEvent(new Event('input'));
       confirmPasswordInput.value = '123';
@@ -149,12 +151,15 @@ describe('SignUpComponent', () => {
     it('sends username, email and password to backend after clicking Sign Up button', async () => {
       await setupForm();
 
-      button?.click();
+      await button?.click();
 
       const req = httpTestingController.expectOne(
         'http://localhost:3000/users'
       );
       const requestBody = req.request.body;
+
+      req.flush({});
+      fixture.detectChanges();
 
       expect(requestBody).toEqual({
         username: 'nadetdev',
@@ -168,7 +173,14 @@ describe('SignUpComponent', () => {
       button.click();
       fixture.detectChanges();
       button.click();
-      httpTestingController.expectOne('http://localhost:3000/users');
+
+      const req = httpTestingController.expectOne(
+        'http://localhost:3000/users'
+      );
+
+      req.flush({});
+      fixture.detectChanges();
+
       expect(button.disabled).toBeTruthy();
     });
 
@@ -186,7 +198,7 @@ describe('SignUpComponent', () => {
       expect(signUp.querySelector('span[role="status"')).toBeFalsy();
     });
 
-    it('display account activation notification after successful sign up request', async () => {
+    it('displays account activation notification after successful sign up request', async () => {
       await setupForm();
       expect(signUp.querySelector('.alert-success')).toBeFalsy();
       button.click();
@@ -216,9 +228,33 @@ describe('SignUpComponent', () => {
         signUp.querySelector('div[data-testid="form-sign-up"]')
       ).toBeFalsy();
     });
+
+    it('displays validation error coming from backend after submit failure', async () => {
+      await setupForm();
+      button.click();
+
+      const req = httpTestingController.expectOne(
+        'http://localhost:3000/users'
+      );
+      req.flush(
+        {
+          validationErrors: {
+            email: 'E-mail in use',
+          },
+        },
+        { status: 400, statusText: 'Bad request' }
+      );
+
+      fixture.detectChanges();
+
+      const validationElement = signUp.querySelector(
+        `div[data-testid="email-validation"]`
+      );
+      expect(validationElement?.textContent).toContain('E-mail in use');
+    });
   });
 
-  describe('Validation', () => {
+  describe('Validation', async () => {
     const testCases = [
       { field: 'username', value: '', error: 'Username is required' },
       {
@@ -226,7 +262,6 @@ describe('SignUpComponent', () => {
         value: 'abc',
         error: 'Username must be at least 4 characters long',
       },
-
       {
         field: 'email',
         value: 'wrong-format',
@@ -272,13 +307,13 @@ describe('SignUpComponent', () => {
 
       {
         field: 'confirmPassword',
-        value: 'PASS1234',
+        value: 'PASS1235',
         error: 'Password mismatch. Please try again',
       },
     ];
 
     testCases.forEach(({ field, value, error }) => {
-      it(`displays "${error}" when "${field}" has "${value}"`, () => {
+      it(`displays "${error}" when "${field}" has "${value}"`, async () => {
         const signUp = fixture.nativeElement as HTMLElement;
 
         expect(
@@ -299,56 +334,48 @@ describe('SignUpComponent', () => {
         const validationElement = signUp.querySelector(
           `div[data-testid="${field}-validation"]`
         );
+
         expect(validationElement?.textContent).toContain(error);
       });
     });
 
-    /* it('displays Username is required message when username is null', () => {
+    it(`displays E-mail in use when email is not unique`, async () => {
+      let httpTestingController = TestBed.inject(HttpTestingController);
       const signUp = fixture.nativeElement as HTMLElement;
 
       expect(
-        signUp.querySelector('div[data-testid="username-validation"]')
+        signUp.querySelector(`div[data-testid="email-validation"]`)
       ).toBeNull();
 
-      const usernameInput = signUp.querySelector(
-        'input[id="username"]'
+      const input = signUp.querySelector(
+        `input[id="email"]`
       ) as HTMLInputElement;
 
-      usernameInput.dispatchEvent(new Event('focus'));
-      usernameInput.dispatchEvent(new Event('blur'));
+      input.value = 'email@email.com';
+
+      input.dispatchEvent(new Event('input'));
+      input.dispatchEvent(new Event('blur'));
+
+      const request = httpTestingController.expectOne(
+        ({ url, method, body }) => {
+          if (
+            url === `http://localhost:3000/users?email=${input.value}` &&
+            method === 'GET'
+          ) {
+            return true;
+          }
+          return false;
+        }
+      );
+
+      request.flush({});
 
       fixture.detectChanges();
 
       const validationElement = signUp.querySelector(
-        'div[data-testid="username-validation"]'
+        `div[data-testid="email-validation"]`
       );
-      expect(validationElement?.textContent).toContain('Username is required');
-    }); */
-
-    /* it('displays length error when username is less than 4 characters', () => {
-      const signUp = fixture.nativeElement as HTMLElement;
-
-      expect(
-        signUp.querySelector('div[data-testid="username-validation"]')
-      ).toBeNull();
-
-      const usernameInput = signUp.querySelector(
-        'input[id="username"]'
-      ) as HTMLInputElement;
-
-      usernameInput.value = '123';
-
-      usernameInput.dispatchEvent(new Event('input'));
-      usernameInput.dispatchEvent(new Event('blur'));
-
-      fixture.detectChanges();
-
-      const validationElement = signUp.querySelector(
-        'div[data-testid="username-validation"]'
-      );
-      expect(validationElement?.textContent).toContain(
-        'Username must be at least 4 characters long'
-      );
-    }); */
+      expect(validationElement?.textContent).toContain('E-mail in use');
+    });
   });
 });

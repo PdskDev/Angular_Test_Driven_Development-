@@ -8,6 +8,8 @@ import {
 } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 
+import { HttpErrorResponse } from '@angular/common/http';
+import { UniqueEmailValidator } from './unique-email.validator';
 import { UserService } from '../service/user.service';
 import { passwordMatchValidator } from './password-match.validator';
 
@@ -25,11 +27,13 @@ export class SignUpComponent implements OnInit {
         Validators.required,
         Validators.minLength(4),
       ]),
-      email: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.email,
-      ]),
+      email: new FormControl('', {
+        validators: [Validators.required, Validators.email],
+        asyncValidators: [
+          this.uniqueEmailValidator.validate.bind(this.uniqueEmailValidator),
+        ],
+        updateOn: 'blur',
+      }),
       password: new FormControl('', [
         Validators.required,
         Validators.minLength(4),
@@ -48,7 +52,10 @@ export class SignUpComponent implements OnInit {
   apiProgress = false;
   signUpSuccess = false;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private uniqueEmailValidator: UniqueEmailValidator
+  ) {}
 
   ngOnInit(): void {}
 
@@ -57,8 +64,17 @@ export class SignUpComponent implements OnInit {
     const body: any = this.form.value;
     delete body.confirmPassword;
 
-    this.userService.signUp(body).subscribe(() => {
-      this.signUpSuccess = true;
+    this.userService.signUp(body).subscribe({
+      next: () => {
+        this.signUpSuccess = true;
+      },
+      error: (httpError: HttpErrorResponse) => {
+        const emailValidationErrorMessage =
+          httpError.error.validationErrors.email;
+        this.form
+          .get('email')
+          ?.setErrors({ backendErrorMessage: emailValidationErrorMessage });
+      },
     });
   }
 
@@ -128,9 +144,12 @@ export class SignUpComponent implements OnInit {
         return 'Email is required';
       } else if (fieldEmail.errors['email']) {
         return 'Invalid e-mail address';
+      } else if (fieldEmail.errors['uniqueEmail']) {
+        return 'E-mail in use';
+      } else if (fieldEmail.errors['backendErrorMessage']) {
+        return fieldEmail.errors['backendErrorMessage'];
       }
     }
-
     return;
   }
 }
