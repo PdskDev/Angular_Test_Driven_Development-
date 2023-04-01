@@ -6,8 +6,6 @@ import {
 import { Observable, catchError, map, mergeMap, of } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-import { Response } from 'node-fetch';
-import { User } from '../service/user.interface';
 import { UserService } from '../service/user.service';
 
 @Injectable({

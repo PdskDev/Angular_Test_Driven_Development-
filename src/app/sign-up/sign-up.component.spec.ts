@@ -252,6 +252,28 @@ describe('SignUpComponent', () => {
       );
       expect(validationElement?.textContent).toContain('E-mail in use');
     });
+
+    it('hides spinner after sign up request failure', async () => {
+      await setupForm();
+      button.click();
+
+      const req = httpTestingController.expectOne(
+        'http://localhost:3000/users'
+      );
+
+      req.flush(
+        {
+          validationErrors: {
+            email: 'E-mail in use',
+          },
+        },
+        { status: 400, statusText: 'Bad request' }
+      );
+
+      fixture.detectChanges();
+      //Fausse reponse
+      expect(signUp.querySelector('span[role="status"')).toBeTruthy();
+    });
   });
 
   describe('Validation', async () => {

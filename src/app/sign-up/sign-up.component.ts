@@ -69,6 +69,7 @@ export class SignUpComponent implements OnInit {
         this.signUpSuccess = true;
       },
       error: (httpError: HttpErrorResponse) => {
+        this.signUpSuccess = false;
         const emailValidationErrorMessage =
           httpError.error.validationErrors.email;
         this.form
@@ -79,15 +80,22 @@ export class SignUpComponent implements OnInit {
   }
 
   isButtonDisabled() {
-    if (
-      this.form.get('password')?.value ==
-        this.form.get('confirmPassword')?.value &&
-      this.form.get('password')?.value != '' &&
-      this.form.get('confirmPassword')?.value != ''
-    ) {
-      return false;
-    } else {
+    const formFilled =
+      this.form.get('username')?.value &&
+      this.form.get('email')?.value &&
+      this.form.get('password')?.value &&
+      this.form.get('confirmPassword')?.value;
+
+    const validationError =
+      this.userNameError ||
+      this.emailError ||
+      this.passwordError ||
+      this.confirmPasswordError;
+
+    if (!formFilled || !validationError) {
       return true;
+    } else {
+      return false;
     }
   }
 
